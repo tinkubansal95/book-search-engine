@@ -16,6 +16,7 @@ const resolvers = {
       }
     },
   },
+
   Mutation: {
     addUser: async (parent, { email, password, username }) => {
       try {
@@ -51,35 +52,51 @@ const resolvers = {
         }
 
         const token = signToken(user);
-
         return { token, user };
       } catch (err) {
         console.log(err);
       }
     },
-    saveBook: async (__, { body }, context) => {
+    saveBook: async (
+      __,
+      { bookId, description, title, authors, image, link },
+      context
+    ) => {
       try {
+        console.log(context.user + "context");
         const author = await User.findById(context.user._id);
         if (!!author) {
           const updatedUser = await User.findOneAndUpdate(
             { _id: context.user._id },
-            { $addToSet: { savedBooks: body } },
+            {
+              $addToSet: {
+                savedBooks: {
+                  bookId,
+                  description,
+                  title,
+                  authors,
+                  image,
+                  link,
+                },
+              },
+            },
             { new: true, runValidators: true }
           );
-          return res.json(updatedUser);
+          return updatedUser;
         }
         throw new AuthenticationError("Not logged in");
       } catch (err) {
         console.log(err);
       }
     },
-    removeBook: async (__, { body }, context) => {
+    removeBook: async (__, { bookId }, context) => {
+      console.log("In heree" + bookId);
       try {
         const author = await User.findById(context.user._id);
         if (!!author) {
           const updatedUser = await User.findOneAndUpdate(
             { _id: context.user._id },
-            { $pull: { savedBooks: { bookId: params.bookId } } },
+            { $pull: { savedBooks: { bookId } } },
             { new: true }
           );
           if (!updatedUser) {
@@ -87,7 +104,8 @@ const resolvers = {
               .status(404)
               .json({ message: "Couldn't find user with this id!" });
           }
-          return res.json(updatedUser);
+          //    console.log(updatedUser);
+          return updatedUser;
         }
         throw new AuthenticationError("Not logged in");
       } catch (err) {
