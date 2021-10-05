@@ -56,9 +56,9 @@ This application has the following features:
 
 ![Delete Book](client/src/assets/images/DeleteBook.png)
 
-![Login](client/src/assets/images/login.png)
+![Login](client/src/assets/images/LogIn.png)
 
-![SignUp](client/src/assets/images/signUp.png)
+![SignUp](client/src/assets/images/SignUp.png)
 
 ## Got Any Questions
 
